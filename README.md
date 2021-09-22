@@ -13,7 +13,7 @@ $ docker login
 $ docker push harvardat/pyraf
 ```
 
-To run the image, follow the 
+To run `pyraf` and use X apps, follow the instructions below.
 
 ## X Window System
 
