@@ -2,10 +2,6 @@
 
 Docker image for running [pyraf](https://iraf-community.github.io/).
 
-Prequisites:
-- **Docker** must be installed.
-- **X Window system** must be installed.
-
 ## Docker
 
 To build and push a new image:
@@ -27,36 +23,41 @@ The Linux graphical windowing system is called X11, also known as X Windows, or 
 
 ### Installation
 
-Install the X window system:
+For Mac OS X, install [XQuartz](https://www.xquartz.org/).
 
-- _Mac OS X_: Install [XQuartz](https://www.xquartz.org/).
-- _Linux_: Install [Xorg](https://wiki.debian.org/Xorg). On Ubuntu, it's as simple as `apt-get install xorg`.
-- _Windows_: Install [XMing](https://sourceforge.net/projects/xming/).
+### Configuration
 
-### Xauthority
+1. Ensure that you have an `~/.Xauthority` file (a binary file used to authorize connections to the `DISPLAY`):
+    ```
+    $ touch ~/.Xauthority
+    ```
+2. Add `XAuthLocation` to `~/.ssh/config`:
+    ```
+    XAuthLocation /opt/X11/bin/xauth
+    ```
+    This is so that `ssh` knows where to find the `xauth` program that is provided by XQuartz, since it's in a non-standard location.
+3. Add `ForwardX11Timeout` to `~/.ssh/config`:
+    ```
+    ForwardX11Timeout 10h
+    ```
+    This increases the default timeout from 20min to 10hrs. Note that this only applies if `ForwardX11Trusted no` (e.g. `ssh -X` instead of `ssh -Y`).
 
-The `~/.Xauthority` file is a binary file used to authorize connections to the display. Make sure to create this file if it does not exist already:
+### DISPLAY and Xauthority
 
-```sh
-$ touch ~/.Xauthority
-```
+The most important environment variable for X is `$DISPLAY`. This will be set by your X server (e.g. XQuartz) and defines a value in the following format: `hostname:D.S`.
 
-On _Mac OS X_, you may need to update your `~/.ssh/config` so that `ssh` knows where to find your `xauth` program installed by XQuartz (since it's in a non-standard location):
+-  `hostname` is the name of the computer the X server runs on (`localhost` if omitted).
+-  `D` is a sequence number if there are multiple displays.
+-  `S` is a screen number (typically 0 because there's one secreen)
 
-```
-XAuthLocation /opt/X11/bin/xauth
-```
+The `.Xauthority` file is used to authorize cookie-based access to the `$DISPLAY`. It defines a "magic cookie" that must be presented by X clients when connecting to the X display server.
 
-Note that you can view the contents of `.Xauthority` by running the `xauth` command:
+Since this is a binary file, you can't view it directly, but must use the `xauth` command:
 
 ```
 $ echo $DISPLAY
 $ xauth list
 ```
-
-You should see the `$DISPLAY` number, remote request protocol, and a cookie number listed. 
-
-The most important environment variable for X is `$DISPLAY`. It contains a value such as `hostname:D.S` where `hostname` is the name of the computer the X server runs on (omitted means localhost), `D` is a sequence number if there are multiple displays, and `S` is a screen number (usually 0 because there's one screen). 
 
 See also:
 - https://en.wikipedia.org/wiki/X_Window_authorization
