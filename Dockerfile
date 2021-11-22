@@ -12,7 +12,9 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update -y \
     emacs \
     x11-apps \
     xauth \
-    python3-pyraf
+    python3-pyraf \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Miniconda
 RUN curl -sSL https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o /tmp/miniconda.sh \
