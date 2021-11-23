@@ -4,7 +4,8 @@ FROM ubuntu:18.04
 RUN DEBIAN_FRONTEND=noninteractive apt-get update -y \
     && apt-get install -y \
     iputils-ping \
-    man \
+    man-db \
+    manpages \
     manpages-posix \
     unzip \
     curl \
