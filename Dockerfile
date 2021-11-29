@@ -1,12 +1,12 @@
 FROM ubuntu:18.04
 
 # Install system packages
+# NOTE: the 'unminimize' command installs the standard Ubuntu Server packages (including manpages).
+# See also: https://wiki.ubuntu.com/Minimal
 RUN DEBIAN_FRONTEND=noninteractive apt-get update -y \
+    && yes | unminimize \
     && apt-get install -y \
     iputils-ping \
-    man-db \
-    manpages \
-    manpages-posix \
     unzip \
     curl \
     wget \
